@@ -1,6 +1,9 @@
 # Sonar EQ Changer 🎧
 
-![Sonar EQ Changer](icon.png)
+<div align="center">
+  <img src="icon.png" width="128" height="128" alt="Sonar EQ Changer Logo" />
+</div>
+
 
 **Sonar EQ Changer** is a lightweight, background Windows application built with WPF and .NET 10. It automatically detects the active game or application you are running and instantly switches your **SteelSeries Sonar** "Game" channel to your desired EQ preset. 
 
