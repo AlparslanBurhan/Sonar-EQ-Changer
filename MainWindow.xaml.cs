@@ -523,7 +523,10 @@ namespace SonarEQChanger
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
                 Filter = "Executable Files|*.exe",
-                Title = Loc.Get("ManualAdd") ?? "Select EXE File"
+                Title = Loc.Get("ManualAdd") ?? "Select EXE File",
+                CheckFileExists = false,
+                CheckPathExists = false,
+                ValidateNames = false
             };
 
             if (dialog.ShowDialog() == true)

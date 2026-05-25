@@ -23,6 +23,17 @@ namespace SonarEQChanger
         private string _configPath = "config.json";
         public AppConfig Config { get; private set; } = new();
 
+        private string GetAppDataFolder()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string folder = Path.Combine(appData, "SonarEQChanger");
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+            return folder;
+        }
+
         public TrayApplicationContext(Application app)
         {
             _app = app;
@@ -88,7 +99,17 @@ namespace SonarEQChanger
 
                 if (!File.Exists(_configPath))
                 {
-                    _configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+                    _configPath = Path.Combine(GetAppDataFolder(), "config.json");
+                    string oldConfigPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "config.json");
+                    if (!File.Exists(_configPath) && File.Exists(oldConfigPath))
+                    {
+                        try
+                        {
+                            File.Copy(oldConfigPath, _configPath);
+                            Log("Migrated old config.json to AppData folder.");
+                        }
+                        catch { }
+                    }
                 }
 
                 if (!File.Exists(_configPath))
@@ -207,7 +228,7 @@ namespace SonarEQChanger
                 sb.AppendLine("into config.json or configure it inside the GUI.");
                 sb.AppendLine("==================================================");
 
-                string outputPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "presets_list.txt");
+                string outputPath = Path.Combine(GetAppDataFolder(), "presets_list.txt");
                 await File.WriteAllTextAsync(outputPath, sb.ToString());
 
                 Process.Start(new ProcessStartInfo
@@ -256,7 +277,7 @@ namespace SonarEQChanger
             
             try
             {
-                string logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "service.log");
+                string logPath = Path.Combine(GetAppDataFolder(), "service.log");
                 File.AppendAllText(logPath, logLine + Environment.NewLine);
             }
             catch { }
