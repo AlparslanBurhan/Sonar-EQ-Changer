@@ -27,7 +27,7 @@ Sonar EQ Changer connects to the local SteelSeries GG background server (`http:/
 
 *Alternatively, you can build it from source:*
 ```bash
-git clone https://github.com/yourusername/Sonar-EQ-Changer.git
+git clone https://github.com/AlparslanBurhan/Sonar-EQ-Changer.git
 cd Sonar-EQ-Changer
 dotnet build -c release
 ```
