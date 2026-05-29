@@ -14,4 +14,8 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="NAudio.Wasapi" Version="2.3.0" />
+  </ItemGroup>
+
 </Project>

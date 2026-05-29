@@ -73,6 +73,9 @@ namespace SonarEQChanger
         private void BtnNavHome_Click(object sender, RoutedEventArgs e)
             => ShowPage("profiles");
 
+        private void BtnNavDevices_Click(object sender, RoutedEventArgs e)
+            => ShowPage("devices");
+
         private void BtnNavSettings_Click(object sender, RoutedEventArgs e)
             => ShowPage("settings");
 
@@ -82,18 +85,24 @@ namespace SonarEQChanger
         private void ShowPage(string page)
         {
             pageProfiles.Visibility  = page == "profiles"  ? Visibility.Visible : Visibility.Collapsed;
+            pageDevices.Visibility   = page == "devices"   ? Visibility.Visible : Visibility.Collapsed;
             pageSettings.Visibility  = page == "settings"  ? Visibility.Visible : Visibility.Collapsed;
             pageAbout.Visibility     = page == "about"     ? Visibility.Visible : Visibility.Collapsed;
 
             rectHomeActive.Visibility     = page == "profiles"  ? Visibility.Visible : Visibility.Collapsed;
+            rectDevicesActive.Visibility  = page == "devices"   ? Visibility.Visible : Visibility.Collapsed;
             rectSettingsActive.Visibility = page == "settings"  ? Visibility.Visible : Visibility.Collapsed;
+            rectAboutActive.Visibility    = page == "about"     ? Visibility.Visible : Visibility.Collapsed;
 
-            btnNavHome.Foreground     = page == "profiles"
-                ? (Brush)FindResource("TxtAccent")
-                : (Brush)FindResource("TxtSecond");
-            btnNavSettings.Foreground = page == "settings"
-                ? (Brush)FindResource("TxtAccent")
-                : (Brush)FindResource("TxtSecond");
+            btnNavHome.Foreground     = page == "profiles" ? (Brush)FindResource("TxtAccent") : (Brush)FindResource("TxtSecond");
+            btnNavDevices.Foreground  = page == "devices"  ? (Brush)FindResource("TxtAccent") : (Brush)FindResource("TxtSecond");
+            btnNavSettings.Foreground = page == "settings" ? (Brush)FindResource("TxtAccent") : (Brush)FindResource("TxtSecond");
+            btnNavAbout.Foreground    = page == "about"    ? (Brush)FindResource("TxtAccent") : (Brush)FindResource("TxtSecond");
+
+            if (page == "devices")
+            {
+                LoadDevicesList();
+            }
         }
 
         // ══════════════════════════════════════════════════════════════
@@ -178,7 +187,7 @@ namespace SonarEQChanger
             var list = new List<string>();
             foreach (var exe in _context.Config.DiscoveredGames)
             {
-                if (_context.Config.DiscoveredGameNames.TryGetValue(exe, out string name) && !string.IsNullOrEmpty(name))
+                if (_context.Config.DiscoveredGameNames.TryGetValue(exe, out string? name) && !string.IsNullOrEmpty(name))
                     list.Add($"{name} ({exe})");
                 else
                     list.Add(exe);
@@ -204,7 +213,7 @@ namespace SonarEQChanger
 
             // Exe ComboBox
             string displayKey = originalKey;
-            if (_context.Config.DiscoveredGameNames.TryGetValue(originalKey, out string gameName) && !string.IsNullOrEmpty(gameName))
+            if (_context.Config.DiscoveredGameNames.TryGetValue(originalKey, out string? gameName) && !string.IsNullOrEmpty(gameName))
                 displayKey = $"{gameName} ({originalKey})";
 
             var cbExe = new ComboBox { IsEditable = false };
@@ -619,6 +628,60 @@ namespace SonarEQChanger
             ledActive.Fill = isGame
                 ? new SolidColorBrush(Color.FromRgb(78, 201, 126))
                 : new SolidColorBrush(Color.FromRgb(120, 120, 160));
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        //  Device Manager Logic
+        // ══════════════════════════════════════════════════════════════
+        private void LoadDevicesList()
+        {
+            spPlaybackDevices.Children.Clear();
+            spRecordingDevices.Children.Clear();
+
+            var allDevices = AudioDeviceEnforcer.GetAllDevices();
+
+            foreach (var device in allDevices)
+            {
+                var chk = new System.Windows.Controls.CheckBox
+                {
+                    Content = device.Name,
+                    Tag = device.Id,
+                    IsChecked = _context.Config.DisabledDevices.Contains(device.Id) || device.IsDisabled,
+                    Margin = new Thickness(0, 0, 0, 8)
+                };
+
+                // Add to proper stackpanel
+                if (device.IsPlayback)
+                    spPlaybackDevices.Children.Add(chk);
+                else
+                    spRecordingDevices.Children.Add(chk);
+            }
+        }
+
+        private void BtnSaveDevices_Click(object sender, RoutedEventArgs e)
+        {
+            _context.Config.DisabledDevices.Clear();
+
+            // Collect playback devices
+            foreach (UIElement child in spPlaybackDevices.Children)
+            {
+                if (child is System.Windows.Controls.CheckBox chk && chk.IsChecked == true)
+                    _context.Config.DisabledDevices.Add(chk.Tag?.ToString() ?? "");
+            }
+
+            // Collect recording devices
+            foreach (UIElement child in spRecordingDevices.Children)
+            {
+                if (child is System.Windows.Controls.CheckBox chk && chk.IsChecked == true)
+                    _context.Config.DisabledDevices.Add(chk.Tag?.ToString() ?? "");
+            }
+
+            _context.SaveConfig();
+
+            // Enforce immediately
+            AudioDeviceEnforcer.EnforceDisabledDevices(_context.Config.DisabledDevices);
+
+            MessageBox.Show("Ses aygıtları yapılandırması kaydedildi. Seçilen aygıtlar artık Sonar'ın tekrar aktif etmesine karşı devredışı bırakıldı.", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         // ══════════════════════════════════════════════════════════════

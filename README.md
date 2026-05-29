@@ -11,6 +11,7 @@ No more manually changing EQ profiles when switching from a tactical shooter to 
 
 ## ✨ Features
 * **Auto EQ Switching:** Detects the foreground application and seamlessly switches the Sonar EQ preset using the local SteelSeries GG web server API.
+* **Device Enforcer (Cihaz Yöneticisi):** Prevents Sonar from automatically reactivating and defaulting to unwanted virtual audio endpoints (e.g., Sonar Media, Sonar Chat). Select the devices you want to hide, and the app will keep them disabled without draining system resources!
 * **Game Scanner:** Automatically scans running processes to help you quickly add your games to the library.
 * **Manual Game Addition:** If a game isn't detected automatically, you can manually select its executable.
 * **System Tray Integration:** Runs silently in the background. Minimizes to the system tray and uses minimal system resources.
@@ -18,31 +19,34 @@ No more manually changing EQ profiles when switching from a tactical shooter to 
 * **Start with Windows:** Can be configured to automatically start with your PC.
 
 ## 🚀 How It Works
-Sonar EQ Changer connects to the local SteelSeries GG background server (`http://localhost:<dynamic_port>`) by reading the coreProps.json file. It retrieves your available Sonar presets and listens to your active windows. When a mapped game is brought to the foreground, it sends an API request to change the EQ preset instantly.
+Sonar EQ Changer connects to the local SteelSeries GG background server (`http://localhost:<dynamic_port>`) by reading the coreProps.json file. It retrieves your available Sonar presets and listens to your active windows. When a mapped game is brought to the foreground, it sends an API request to change the EQ preset instantly. The **Device Enforcer** utilizes the Windows `IPolicyConfig` COM interface to interact directly with system audio endpoints.
 
 ## 📦 Installation
 1. Ensure you have **SteelSeries GG** installed and running on your system, with Sonar enabled.
-2. Download the latest release from the [Releases](#) page.
-3. Extract the contents and run `SonarEQChanger.exe`.
+2. Download the latest standalone `.exe` release from the [Releases](#) page.
+3. Place `SonarEQChanger.exe` wherever you like and run it.
 
-*Alternatively, you can build it from source:*
+*Alternatively, you can build it from source as a single, self-contained executable:*
 ```bash
 git clone https://github.com/AlparslanBurhan/Sonar-EQ-Changer.git
 cd Sonar-EQ-Changer
-dotnet build -c release
+dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:DebugType=none /p:DebugSymbols=false
 ```
+*You will find your `SonarEQChanger.exe` inside the `bin\Release\net10.0-windows\win-x64\publish` folder.*
 
 ## 🛠️ Usage
 1. Open the application from the system tray.
 2. On the **Profiles (Profiller)** page, choose a default EQ preset. This preset will be applied when no mapped game is running.
 3. Click "Scan Running Games (Çalışan Oyunları Tara)" to discover active games, or manually add an `.exe` file.
 4. Map your games to your preferred Sonar EQ presets.
-5. Minimize the app and enjoy! It will automatically switch presets as you alt-tab or launch games.
+5. **(Optional)** Go to the **Device Manager** tab to select any playback/recording devices you want to keep permanently disabled.
+6. Minimize the app and enjoy! It will automatically switch presets as you alt-tab or launch games.
 
 ## 💻 Technologies Used
 * **C# / .NET 10.0**
 * **WPF (Windows Presentation Foundation)**
 * **SteelSeries GG Local API**
+* **NAudio (CoreAudioAPI)**
 
 ## 🤝 Contributing
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](#).

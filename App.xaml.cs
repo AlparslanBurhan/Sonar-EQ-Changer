@@ -38,6 +38,9 @@ namespace SonarEQChanger
 
                 // Start Tray and Watcher
                 _trayContext = new TrayApplicationContext(this);
+
+                // Enforce disabled audio devices at startup
+                AudioDeviceEnforcer.EnforceDisabledDevices(_trayContext.Config.DisabledDevices);
             }
             catch (Exception ex)
             {

@@ -448,39 +448,28 @@
                             <Button Style="{StaticResource IconButton}"
                                     Content="&#xE700;" ToolTip="Menu"
                                     Click="BtnMenuToggle_Click"/>
-                            <!-- Home / Dashboard - active page indicator -->
+                            <!-- Home / Dashboard -->
                             <Grid Width="48" Height="48">
-                                <Rectangle x:Name="rectHomeActive"
-                                           Width="3" HorizontalAlignment="Left"
-                                           Fill="{StaticResource Accent}"
-                                           RadiusX="2" RadiusY="2"
-                                           Visibility="Visible"/>
-                                <Button x:Name="btnNavHome"
-                                        Style="{StaticResource IconButton}"
-                                        Content="&#xE80F;"
-                                        Foreground="{StaticResource Accent}"
-                                        ToolTip="Auto Switch Profiles"
-                                        Click="BtnNavHome_Click"/>
+                                <Button x:Name="btnNavHome" Style="{StaticResource IconButton}" Content="&#xE80F;" Foreground="{StaticResource Accent}" ToolTip="Auto Switch Profiles" Click="BtnNavHome_Click"/>
+                                <Rectangle x:Name="rectHomeActive" Width="3" HorizontalAlignment="Left" Fill="{StaticResource Accent}" RadiusX="2" RadiusY="2" Visibility="Visible" IsHitTestVisible="False"/>
+                            </Grid>
+                            <!-- Devices -->
+                            <Grid Width="48" Height="48">
+                                <Button x:Name="btnNavDevices" Style="{StaticResource IconButton}" Content="&#xE767;" ToolTip="Device Manager" Click="BtnNavDevices_Click"/>
+                                <Rectangle x:Name="rectDevicesActive" Width="3" HorizontalAlignment="Left" Fill="{StaticResource Accent}" RadiusX="2" RadiusY="2" Visibility="Collapsed" IsHitTestVisible="False"/>
                             </Grid>
                             <!-- Help -->
-                            <Button Style="{StaticResource IconButton}"
-                                    Content="&#xE897;" ToolTip="About"
-                                    Click="BtnNavAbout_Click"/>
+                            <Grid Width="48" Height="48">
+                                <Button x:Name="btnNavAbout" Style="{StaticResource IconButton}" Content="&#xE897;" ToolTip="About" Click="BtnNavAbout_Click"/>
+                                <Rectangle x:Name="rectAboutActive" Width="3" HorizontalAlignment="Left" Fill="{StaticResource Accent}" RadiusX="2" RadiusY="2" Visibility="Collapsed" IsHitTestVisible="False"/>
+                            </Grid>
                         </StackPanel>
 
                         <!-- Bottom: Settings -->
                         <StackPanel Grid.Row="2" Margin="0,0,0,12">
                             <Grid Width="48" Height="48">
-                                <Rectangle x:Name="rectSettingsActive"
-                                           Width="3" HorizontalAlignment="Left"
-                                           Fill="{StaticResource Accent}"
-                                           RadiusX="2" RadiusY="2"
-                                           Visibility="Collapsed"/>
-                                <Button x:Name="btnNavSettings"
-                                        Style="{StaticResource IconButton}"
-                                        Content="&#xE713;"
-                                        ToolTip="Settings"
-                                        Click="BtnNavSettings_Click"/>
+                                <Button x:Name="btnNavSettings" Style="{StaticResource IconButton}" Content="&#xE713;" ToolTip="Settings" Click="BtnNavSettings_Click"/>
+                                <Rectangle x:Name="rectSettingsActive" Width="3" HorizontalAlignment="Left" Fill="{StaticResource Accent}" RadiusX="2" RadiusY="2" Visibility="Collapsed" IsHitTestVisible="False"/>
                             </Grid>
                         </StackPanel>
                     </Grid>
@@ -650,9 +639,69 @@
                             </Border>
                         </Grid>
 
+                        <!-- ── Page: Devices ── -->
+                        <Grid x:Name="pageDevices" Grid.Row="1" Margin="24,20,24,20" Visibility="Collapsed">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Cihaz Yöneticisi" FontFamily="Segoe UI" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource TxtPrimary}" Margin="0,0,0,6"/>
+                            <TextBlock Grid.Row="1" Text="Seçilen ses aygıtları, SteelSeries Sonar tarafından tekrar aktif edilmesini önlemek amacıyla arka planda otomatik olarak devredışı tutulur." FontFamily="Segoe UI" FontSize="13" Foreground="{StaticResource TxtSecond}" Margin="0,0,0,20" TextWrapping="Wrap"/>
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="16"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Playback Devices -->
+                                <Border Grid.Column="0" Background="{StaticResource BgCard}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="8" Padding="12">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="HOPARLÖRLER (PLAYBACK)" FontFamily="Segoe UI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TxtSecond}" Margin="4,0,0,10"/>
+                                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                            <StackPanel x:Name="spPlaybackDevices"/>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Recording Devices -->
+                                <Border Grid.Column="2" Background="{StaticResource BgCard}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="8" Padding="12">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Grid.Row="0" Text="MİKROFONLAR (RECORDING)" FontFamily="Segoe UI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TxtSecond}" Margin="4,0,0,10"/>
+                                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                            <StackPanel x:Name="spRecordingDevices"/>
+                                        </ScrollViewer>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+
+                            <!-- Save Devices Button -->
+                            <Border Grid.Row="3" Margin="0,16,0,0" Background="{StaticResource BgCard}" BorderBrush="{StaticResource Border}" BorderThickness="1" CornerRadius="8" Padding="20,14">
+                                <Grid>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="{StaticResource TxtSecond}" Text="Ayarları kaydedip hemen uygulamak için aşağıdaki butona basın."/>
+                                    </StackPanel>
+                                    <Button x:Name="btnSaveDevices" Style="{StaticResource AccentButton}" Padding="22,9" HorizontalAlignment="Right" Click="BtnSaveDevices_Click">
+                                        <TextBlock Text="Kaydet" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"/>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
                         <!-- ── Page: Settings ── -->
-                        <Grid x:Name="pageSettings" Grid.Row="1" Margin="24,20,24,20"
-                              Visibility="Collapsed">
+                        <Grid x:Name="pageSettings" Grid.Row="1" Margin="24,20,24,20" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>

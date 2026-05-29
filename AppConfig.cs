@@ -12,5 +12,6 @@ namespace SonarEQChanger
         public bool StartWithWindows { get; set; } = false;
         public List<string> DiscoveredGames { get; set; } = new();
         public Dictionary<string, string> DiscoveredGameNames { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public List<string> DisabledDevices { get; set; } = new();
     }
 }
