@@ -658,7 +658,7 @@ namespace SonarEQChanger
             }
         }
 
-        private void BtnSaveDevices_Click(object sender, RoutedEventArgs e)
+        private async void BtnSaveDevices_Click(object sender, RoutedEventArgs e)
         {
             _context.Config.DisabledDevices.Clear();
 
@@ -676,12 +676,16 @@ namespace SonarEQChanger
                     _context.Config.DisabledDevices.Add(chk.Tag?.ToString() ?? "");
             }
 
+            // Save config before enforcing
             _context.SaveConfig();
 
             // Enforce immediately
             AudioDeviceEnforcer.EnforceDisabledDevices(_context.Config.DisabledDevices);
 
-            MessageBox.Show("Ses aygıtları yapılandırması kaydedildi. Seçilen aygıtlar artık Sonar'ın tekrar aktif etmesine karşı devredışı bırakıldı.", "Bilgi", MessageBoxButton.OK, MessageBoxImage.Information);
+            // Show success label
+            txtSaveDevicesStatus.Visibility = Visibility.Visible;
+            await Task.Delay(3000);
+            txtSaveDevicesStatus.Visibility = Visibility.Collapsed;
         }
 
         // ══════════════════════════════════════════════════════════════

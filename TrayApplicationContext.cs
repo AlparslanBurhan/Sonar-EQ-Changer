@@ -145,6 +145,9 @@ namespace SonarEQChanger
                     Log
                 );
                 _watcher.Start();
+
+                // 4. Enforce Disabled Audio Devices at startup
+                AudioDeviceEnforcer.EnforceDisabledDevices(Config.DisabledDevices);
             }
             catch (Exception ex)
             {

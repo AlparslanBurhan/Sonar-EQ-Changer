@@ -693,9 +693,12 @@
                                     <StackPanel VerticalAlignment="Center">
                                         <TextBlock FontFamily="Segoe UI" FontSize="12" Foreground="{StaticResource TxtSecond}" Text="Ayarları kaydedip hemen uygulamak için aşağıdaki butona basın."/>
                                     </StackPanel>
-                                    <Button x:Name="btnSaveDevices" Style="{StaticResource AccentButton}" Padding="22,9" HorizontalAlignment="Right" Click="BtnSaveDevices_Click">
-                                        <TextBlock Text="Kaydet" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"/>
-                                    </Button>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <TextBlock x:Name="txtSaveDevicesStatus" Text="Kaydedildi ✔" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold" Foreground="#4EC97E" Margin="0,0,16,0" VerticalAlignment="Center" Visibility="Collapsed"/>
+                                        <Button x:Name="btnSaveDevices" Style="{StaticResource AccentButton}" Padding="22,9" Click="BtnSaveDevices_Click">
+                                            <TextBlock Text="Kaydet ve Uygula" FontFamily="Segoe UI" FontSize="13" FontWeight="SemiBold"/>
+                                        </Button>
+                                    </StackPanel>
                                 </Grid>
                             </Border>
                         </Grid>
